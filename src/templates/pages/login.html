@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="bg-light-yellow h-screen w-screen flex justify-center items-center">
+	<div class="p-8 bg-green w-full max-w-md h-max rounded-lg flex flex-col justify-center shadow-2xl">
+		<h1 class="text-white text-center text-2xl font-bold mt-1 mb-5">
+			{% if is_register %}
+				Sign Up
+			{% else %}
+				Login
+			{% endif %}
+		</h1>
+		<form action="{% if is_register %}{% url 'signup' %}{% else %}{% url 'login' %}{% endif %}" method="post">
+			{% csrf_token %}
+			{% for field in form %}
+				<div class="flex flex-col mb-5">
+					<label for="{{ field.id_for_label }}" class="text-white">{{ field.label }}</label>
+					{{ field|add_classes:'p-2 rounded-lg border-2 border-yellow border-solid shadow-lg' }}
+				</div>
+			{% endfor %}
+			<div class="my-3 min-h-px">
+				{% for field, error in form.errors.items %}
+					<ul>
+						<li class="text-red">
+							{{ error.as_text }}
+						</li>
+					</ul>
+				{% endfor %}
+				
+				{% if messages %}
+					{% for message in messages %}
+						<ul>
+							<li class="text-white text-center">
+								{{ message }}
+							</li>
+						</ul>
+					{% endfor %}
+				{% endif %}
+			</div>
+			<button type="submit" class="bg-yellow py-2 px-4 rounded-lg w-full text-white font-bold shadow-lg">
+				{% if is_register %}
+					Sign Up
+				{% else %}
+					Login
+				{% endif %}
+			</button>
+		</form>
+		<div class="mt-4 flex justify-center items-center">
+			{% if is_register %}
+				<p class="mr-2 text-white">Existing user ?</p>
+				<a href="{% url 'login' %}" class="p-1 text-light-yellow">Sign In</a>
+			{% else %}
+					<p class="mr-2 text-white">New user ?</p>
+					<a href="{% url 'signup' %}" class="p-1 text-light-yellow">Register</a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,7 @@
+/node_modules
+/env
+/local-cdn
+/**/__pycache__
+package-lock.json
+db.sqlite3
+/src/static/css/tailwind.css
