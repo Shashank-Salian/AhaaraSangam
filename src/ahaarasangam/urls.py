@@ -19,17 +19,21 @@ from django.conf import settings
 from django.urls import path
 
 from . import views
-from commons import views as common_views
+from donor import views as donor_views
 
 urlpatterns = [
     path('', views.home, name="home"),
-    path('login/', common_views.login_view, name="login"),
-    path('signup/', common_views.signup_view, name="signup"),
+    path('login/', donor_views.login_view, name="login"),
+    path('signup/', donor_views.signup_view, name="signup"),
+    path('donate/', donor_views.donate_view, name="donate"),
+    path('donorprofile/', donor_views.donor_profile_view, name="donor_profile"),
+    path('api/cities/<str:state_iso2>/',
+         donor_views.get_cities_api, name='get_cities'),
     path('admin/', admin.site.urls),
 ]
 
 # python manage.py collectstatic
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)

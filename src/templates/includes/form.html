@@ -1,0 +1,33 @@
+{% load custom_tags %}
+
+{% csrf_token %}
+{% for field in form %}
+	{% if field.field.widget.input_type == 'hidden' %}
+		{{ field }}
+	{% else %}
+		<div class="flex flex-col mb-5">
+			<label for="{{ field.id_for_label }}" class="text-white">{{ field.label }}</label>
+			{{ field|add_classes:'p-2 rounded-lg border-2 border-yellow border-solid shadow-lg bg-white' }}
+		</div>
+	{% endif %}
+{% endfor %}
+
+<div class="my-3 min-h-px">
+	{% for field, error in form.errors.items %}
+		<ul>
+			<li class="text-red">
+				{{ error.as_text }}
+			</li>
+		</ul>
+	{% endfor %}
+
+	{% if messages %}
+		{% for message in messages %}
+			<ul>
+				<li class="text-white text-center">
+					{{ message }}
+				</li>
+			</ul>
+		{% endfor %}
+	{% endif %}
+</div>

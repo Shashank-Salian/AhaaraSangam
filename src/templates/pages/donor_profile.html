@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+
+<div class="bg-light-yellow h-screen w-screen flex justify-center items-center flex-col">
+	<div class="p-8 bg-green w-full max-w-md h-max rounded-lg flex flex-col justify-center shadow-2xl">
+		<h1 class="text-white text-center text-2xl font-bold mt-1 mb-5">Set up Donor Profile</h1>
+
+		<form action="{% url 'donor_profile' %}" method="POST">
+			{% include "includes/form.html" %}
+			<button type="submit" class="bg-yellow py-2 px-4 rounded-lg w-full text-white font-bold shadow-lg">Create Profile</button>
+		</form>
+	</div>
+	{% include "includes/quote.html" %}
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/donorProfile.js' %}" defer="true"></script>
+{% endblock scripts %}

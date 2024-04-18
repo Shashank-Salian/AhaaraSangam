@@ -1,0 +1,7 @@
+{% load custom_tags %}
+
+{% random_quote as quote_info %}
+<div class="p-2 mt-9 max-w-xl">
+	<h2 class="text-white font-bold text-l">{{ quote_info.quote }}</h2>
+	<span class="float-end mt-2 text-white text-sm">-{{ quote_info.author }}</span>
+</div>
