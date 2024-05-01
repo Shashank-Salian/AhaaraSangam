@@ -7,7 +7,7 @@
 	<div class="p-8 bg-green w-full max-w-md h-max rounded-lg flex flex-col justify-center shadow-2xl">
 		<h1 class="text-white text-center text-2xl font-bold mt-1 mb-5">Enter donation information</h1>
 
-		<form action="{% url 'donate' %}" method="POST">
+		<form action="{% url 'donate' %}" method="POST" enctype="multipart/form-data">
 			{% include "includes/form.html" %}
 
 			<button type="submit" class="bg-yellow py-2 px-4 rounded-lg w-full text-white font-bold shadow-lg">Donate</button>

@@ -25,10 +25,13 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('login/', donor_views.login_view, name="login"),
     path('signup/', donor_views.signup_view, name="signup"),
+    path('logout/', donor_views.logout_view, name="logout"),
     path('donate/', donor_views.donate_view, name="donate"),
     path('donorprofile/', donor_views.donor_profile_view, name="donor_profile"),
     path('api/cities/<str:state_iso2>/',
          donor_views.get_cities_api, name='get_cities'),
+    path('appassets/img/donation/<int:donation_id>/',
+         donor_views.app_assets_image, name="app_assets_image"),
     path('admin/', admin.site.urls),
 ]
 

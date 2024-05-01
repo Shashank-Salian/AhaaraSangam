@@ -1,7 +1,22 @@
 {% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block css %}
+<style>
+	.food-img {
+		width: 30%;
+	}
+
+	.location-inp {
+		top: 5rem;
+		box-shadow: 0 10px 10px #00000011;
+	}
+</style>
+{% endblock css %}
 
 {% block content %}
-<div class="w-full bg-light-yellow h-20">
+<div class="w-full bg-light-yellow h-20 shadow-xl sticky top-0 z-10">
 	<div class="w-full max-w-7xl mx-auto h-full 2xl:p-0 lg:px-10 md:px-8 sm:px-6 px-3 flex justify-between items-center">
 		<h1 class="font-bold text-2xl select-none cursor-pointer">Ahaara Sangam</h1>
 		<div>
@@ -13,10 +28,75 @@
 	</div>
 </div>
 
-<div class="w-full min-h-screen py-9">
-	<div class="w-full max-w-7xl mx-auto h-full 2xl:p-0 lg:px-10 md:px-8 sm:px-6 px-3">
-		<h2>Donors near you,</h2>
-		
+<div class="w-full min-h-screen pb-10">
+	<div class="sticky location-inp bg-white pb-8 pt-12">
+		<div class="w-full max-w-7xl mx-auto h-full 2xl:p-0 lg:px-10 md:px-8 sm:px-6 px-3 flex items-center">
+			<h2 class="lg:text-3xl md:text-2xl sm:text-xl text-xl font-bold inline-block mr-3">Donors near you,</h2>
+			<div class="flex items-center">
+				<img src="{% static 'icons/location.svg' %}" alt="location" class="w-8 select-none">
+				<form action="{% url "home" %}" class="flex" method="GET">
+					{% for field in form %}
+						{% if field.field.widget.input_type == 'hidden' %}
+							{{ field }}
+						{% else %}
+							<div class="flex flex-col lg:w-52 md:w-32 sm:w-28 ml-2 mr-5">
+								<label for="{{ field.id_for_label }}" class="text-xs">{{ field.label }}</label>
+								{{ field|add_classes:'p-1 rounded-lg border-2 border-yellow border-solid shadow-lg bg-white w-full text-sm' }}
+							</div>
+						{% endif %}
+					{% endfor %}
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="w-full max-w-7xl mx-auto 2xl:p-0 lg:px-10 md:px-8 sm:px-6 px-3 mt-10">
+		{% for donate_item in donations %}
+			<div class="shadow-xl rounded-xl overflow-hidden min-h-44 flex my-14">
+				<img src="{% url "app_assets_image" donate_item.id %}" alt="Food Image" class="min-h-full w-full max-w-sm food-img min-w-52" />
+				<div class="p-5 flex-1 flex flex-col justify-between">
+					<div class="flex items-center justify-between">
+						<h3 class="text-2xl font-bold">{{ donate_item.donor.organization_name }}</h3>
+						<span>{{ donate_item.date|timesince }} ago</span>
+					</div>
+					<div class="flex flex-col">
+						<div class="flex">
+							<img src="{% static 'icons/location.svg' %}" alt="location" width="16" height="16" />
+							<span class="mx-1 text-sm">{{ donate_item.donor.city }}</span>
+							<span class="mx-1 text-sm">|</span>
+							<span class="mx-1 text-sm">{{ donate_item.donor.state }}</span>
+						</div>
+						<address class="my-1">
+							<span class="text-xs font-bold italic">Address:</span>
+							<p class="-mt-1">{{ donate_item.donor.address }}</p>
+						</address>
+					</div>
+					<div class="my-1 flex">
+						<div>
+							<span class="text-xs font-bold italic">Cuisine:</span>
+							<p class="-mt-1">{{ donate_item.items }}</p>
+						</div>
+						<div class="ml-10">
+							<span class="text-xs font-bold italic">Amount:</span>
+							<p class="-mt-1">{{ donate_item.amount }} KG's</p>
+						</div>
+					</div>
+					<div class="my-1">
+						<span class="text-xs font-bold italic">Contact:</span>
+						<div class="flex items-center -mt-1">
+							<img src="{% static "icons/phone.svg" %}" alt="phone" width="20" />
+							<a href="tel:+91987654321" class="mx-1 cursor-pointer">{{ donate_item.donor.contact_number }}</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
 	</div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="{% static "js/statecity.js" %}" defer="true"></script>
+<script src="{% static "js/home.js" %}"></script>
+{% endblock scripts %}

@@ -129,20 +129,6 @@ class DonorProfile(forms.Form):
                 'Please enter a valid address.'))
             is_valid_form = False
 
-        [state_name, state_iso2] = self.get_state_info()
-        print(state_name, state_iso2)
-
-        state_exists = False
-        for state_info in IN_STATES:
-            if state_iso2 == state_info['iso2']:
-                state_exists = True
-                break
-
-        if not state_exists:
-            self.add_error('state', ValidationError(
-                'Select state from the list.'))
-            is_valid_form = False
-
         return is_valid_form
 
     def save(self, user):
@@ -157,8 +143,43 @@ class DonorProfile(forms.Form):
 class DonationForm(forms.Form):
     items = forms.CharField(max_length=500, required=True, label="Food Items (separate by comma ',')",
                             widget=forms.Textarea(attrs={'placeholder': 'Food items'}))
-    amount = forms.DecimalField(max_digits=10, decimal_places=2, widget=forms.NumberInput(
+    amount = forms.IntegerField(widget=forms.NumberInput(
         attrs={'placeholder': 'Amount in KG'}), label="Amount in KG")
     category = forms.ChoiceField(choices=Donations.FOOD_TYPE)
     image = forms.ImageField(required=False)
     next = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    def is_valid(self) -> bool:
+        if not super().is_valid():
+            return False
+
+        is_valid_form = True
+
+        if len(self.cleaned_data['items']) < 3:
+            self.add_error('items', ValidationError(
+                'Please enter valid food items.'))
+            is_valid_form = False
+
+        return is_valid_form
+
+    def save(self, donor):
+        donation = Donations(donor=donor, items=self.cleaned_data['items'], amount=self.cleaned_data[
+                             'amount'], food_type=self.cleaned_data['category'], image=self.cleaned_data['image'])
+        donation.save()
+
+
+class GetLocationForm(forms.Form):
+    states_choice = [('0', 'Select State')]
+    states_choice.extend(
+        [(f"{s['name']};{s['iso2']}", s['name']) for s in IN_STATES])
+
+    state = forms.CharField(widget=forms.Select(
+        attrs={'placeholder': 'State'}, choices=states_choice), required=False)
+    city = forms.CharField(widget=forms.Select(
+        attrs={'placeholder': 'City'}, choices=[('0', 'Select City')]), required=False)
+
+    def get_state_name(self):
+        return self.cleaned_data['state'].split(';')[0]
+
+    def get_state_iso2(self):
+        return self.cleaned_data['state'].split(';')[1]

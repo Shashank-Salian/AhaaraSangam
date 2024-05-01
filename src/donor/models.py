@@ -19,7 +19,8 @@ class Donations(models.Model):
     items = models.CharField(max_length=500, default='')
     amount = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
-    picture = models.ImageField(upload_to='app_assets', null=True)
+    image = models.ImageField(upload_to='app_assets', null=True)
+    available = models.BooleanField(default=True)
 
     FOOD_TYPE = [
         ("VEG", "Veg"),
