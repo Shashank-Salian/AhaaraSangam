@@ -19,10 +19,10 @@
 <div class="w-full bg-light-yellow h-20 shadow-xl sticky top-0 z-10">
 	<div class="w-full max-w-7xl mx-auto h-full 2xl:p-0 lg:px-10 md:px-8 sm:px-6 px-3 flex justify-between items-center">
 		<h1 class="font-bold text-2xl select-none cursor-pointer">Ahaara Sangam</h1>
-		<div>
+		<div class="flex items-center">
 			<a href="{% url "donate" %}" class="bg-green py-2 px-5 rounded-lg text-white font-bold shadow-lg select-none">Donate +</a>
 			{% if user.is_authenticated %}
-				<span>{{ user.username }}</span>
+				<a href="{% url "update_profile" %}" class="font-bold ml-6 p-2 cursor-pointer">{{ user.username }}</a>
 			{% endif %}
 		</div>
 	</div>

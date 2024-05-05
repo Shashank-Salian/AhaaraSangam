@@ -6,11 +6,23 @@
 
 <div class="bg-light-yellow h-screen w-screen flex justify-center items-center flex-col">
 	<div class="p-8 bg-green w-full max-w-md h-max rounded-lg flex flex-col justify-center shadow-2xl">
-		<h1 class="text-white text-center text-2xl font-bold mt-1 mb-5">Set up Donor Profile</h1>
+		<h1 class="text-white text-center text-2xl font-bold mt-1 mb-5">
+			{% if update %}
+				Update Donor Profile
+			{% else %}
+				Set up Donor Profile
+			{% endif %}
+		</h1>
 
-		<form action="{% url 'donor_profile' %}" method="POST">
+		<form action="{% if update %}{% url "update_profile" %}{% else %}{% url 'donor_profile' %}{% endif %}" method="POST">
 			{% include "includes/form.html" %}
-			<button type="submit" class="bg-yellow py-2 px-4 rounded-lg w-full text-white font-bold shadow-lg">Create Profile</button>
+			<button type="submit" class="bg-yellow py-2 px-4 rounded-lg w-full text-white font-bold shadow-lg">
+				{% if update %}
+					Update
+				{% else %}
+					Create Profile
+				{% endif %}
+			</button>
 		</form>
 	</div>
 	{% include "includes/quote.html" %}
@@ -20,4 +32,17 @@
 
 {% block scripts %}
 <script src="{% static 'js/statecity.js' %}" defer="true"></script>
+{% if update %}
+	<script>
+		let selectedCity = "{{ selected_city }}";
+
+		function afterCitiesFetched(stateIso, cityInputEle) {
+			if (selectedCity !== "") {
+				const selectedOption = cityInputEle.querySelector(`option[value="${selectedCity}"]`)
+				if (selectedOption) selectedOption.selected = true;
+				return;
+			}
+		}
+	</script>
+{% endif %}
 {% endblock scripts %}

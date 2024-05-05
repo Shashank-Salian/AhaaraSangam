@@ -9,7 +9,7 @@ const cityInput = document.querySelector("form select[name='city']");
  * @returns {Promise<{id: number,name: string}[]>}
  */
 async function getCitiesOfStates(stateIso) {
-  const response = await fetch(`/api/cities/${stateIso}`);
+  const response = await fetch(`/api/cities/${stateIso}/`);
   if (response.status !== 200) {
     throw new Error("Something went wrong. Please try again later.");
   }
@@ -67,7 +67,7 @@ async function onStateChange(e) {
     );
   }
 
-  if (afterCitiesFetched) {
+  if (typeof afterCitiesFetched !== "undefined") {
     afterCitiesFetched(stateIso, cityInput);
   }
 }

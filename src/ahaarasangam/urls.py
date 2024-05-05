@@ -28,6 +28,7 @@ urlpatterns = [
     path('logout/', donor_views.logout_view, name="logout"),
     path('donate/', donor_views.donate_view, name="donate"),
     path('donorprofile/', donor_views.donor_profile_view, name="donor_profile"),
+    path('updateprofile/', donor_views.update_donor_profile, name="update_profile"),
     path('api/cities/<str:state_iso2>/',
          donor_views.get_cities_api, name='get_cities'),
     path('appassets/img/donation/<int:donation_id>/',

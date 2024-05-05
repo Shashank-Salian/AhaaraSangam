@@ -78,7 +78,7 @@ class SignUpForm(forms.Form):
         return user
 
 
-class DonorProfile(forms.Form):
+class DonorProfileForm(forms.Form):
     organization_name = forms.CharField(max_length=100, required=True, widget=forms.TextInput(
         attrs={'placeholder': 'Organization Name'}))
     contact_number = forms.CharField(max_length=13, required=True, widget=forms.TextInput(

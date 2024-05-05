@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.templatetags.static import static
 
-from .forms import SignInForm, SignUpForm, DonorProfile, DonationForm
+from .forms import SignInForm, SignUpForm, DonorProfileForm, DonationForm
 from .models import Donors, Donations
 from .utils import get_random_quotes
 
@@ -103,8 +103,12 @@ def donor_profile_view(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect(reverse('login') + '?next=' + request.path)
 
+    donor_profiles = Donors.objects.filter(user=request.user)
+    if donor_profiles.exists():
+        return redirect('donate')
+
     if request.method == 'POST':
-        submit_form = DonorProfile(request.POST)
+        submit_form = DonorProfileForm(request.POST)
         if submit_form.is_valid():
             submit_form.save(request.user)
             messages.add_message(request, messages.SUCCESS,
@@ -116,9 +120,47 @@ def donor_profile_view(request: HttpRequest):
         else:
             return render(request, "pages/donor_profile.html", {'form': submit_form})
 
-    form = DonorProfile(data={"next": request.GET.get('next')})
+    form = DonorProfileForm(data={"next": request.GET.get('next')})
     form.errors.clear()
     return render(request, "pages/donor_profile.html", {'form': form})
+
+
+def update_donor_profile(request: HttpRequest):
+    if not request.user.is_authenticated:
+        return redirect(reverse('login') + '?next=' + request.path)
+
+    donor_profile = Donors.objects.filter(user=request.user).first()
+    if not donor_profile:
+        return redirect('donor_profile')
+
+    if request.method == "POST":
+        new_form_data = DonorProfileForm(request.POST)
+        if new_form_data.is_valid():
+            [state_name, state_iso2] = new_form_data.get_state_info()
+            donor_profile.organization_name = new_form_data.cleaned_data['organization_name']
+            donor_profile.contact_number = new_form_data.cleaned_data['contact_number']
+            donor_profile.address = new_form_data.cleaned_data['address']
+            donor_profile.state = state_name
+            donor_profile.state_iso2 = state_iso2
+
+            donor_profile.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 'Donor profile updated successfully')
+            return redirect('home')
+
+        return render(request, 'pages/donor_profile.html', {'form': new_form_data, 'update': True, 'selected_city': new_form_data.cleaned_data['city']})
+
+    form_data = {
+        "organization_name": donor_profile.organization_name,
+        "contact_number": donor_profile.contact_number,
+        "address": donor_profile.address,
+        "state": f"{donor_profile.state};{donor_profile.state_iso2}",
+        "city": donor_profile.city,
+    }
+
+    form = DonorProfileForm(data=form_data)
+
+    return render(request, 'pages/donor_profile.html', {'form': form, 'update': True, 'selected_city': form_data['city']})
 
 
 def get_cities_api(request: HttpRequest, state_iso2: str):
