@@ -23,6 +23,7 @@
 			<a href="{% url "donate" %}" class="bg-green py-2 px-5 rounded-lg text-white font-bold shadow-lg select-none">Donate +</a>
 			{% if user.is_authenticated %}
 				<a href="{% url "update_profile" %}" class="font-bold ml-6 p-2 cursor-pointer">{{ user.username }}</a>
+				<a href="{% url "logout" %}" class="font-bold ml-6 p-2 cursor-pointer text-red">Log out</a>
 			{% endif %}
 		</div>
 	</div>

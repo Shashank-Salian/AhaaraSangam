@@ -13,6 +13,9 @@ class Donors(models.Model):
     city = models.CharField(max_length=100)
     state_iso2 = models.CharField(max_length=4, default=None)
 
+    def __str__(self) -> str:
+        return self.organization_name
+
 
 class Donations(models.Model):
     donor = models.ForeignKey(Donors, on_delete=models.CASCADE)
@@ -28,3 +31,6 @@ class Donations(models.Model):
         ("BOTH", "Veg and Non Veg")
     ]
     food_type = models.CharField(max_length=10, choices=FOOD_TYPE)
+
+    def __str__(self) -> str:
+        return f'{self.donor.organization_name} : {self.items[:20]}...'
